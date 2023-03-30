@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,request
 
 app = Flask(__name__)
 
@@ -9,6 +9,23 @@ def hello_world():
 @app.route("/index")
 def index():
     return render_template('index.html')
+
+@app.route("/name/<name>")
+def name(name):
+    print('Type:',type(name))
+    return name
+
+@app.route("/number/<int:number>")
+def number(number):
+    print('Type:',type(number))
+    return str(number)
+
+@app.route("/page")
+def email():
+    email=request.args.get('email')
+    password=request.args.get('password')
+    return f'{email},{password}'
+
 
 if  __name__ == '__main__':
     app.run(debug=True)
