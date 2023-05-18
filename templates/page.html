@@ -1,15 +1,13 @@
 {% extends 'layout/layout.html' %}
-{% block title %} 成功 {% endblock title %}
+{% block title %}
+  成功
+{% endblock %}
 {% block content %}
-<h1>登入成功</h1>
+  <h1>登入成功</h1>
 
-{% if type %}
-<script>
-Swal.fire(
-  '登入成功',
-  'You clicked the button!',
-  'success'
-)
-</script>
-{% endif %}
-{% endblock content %}
+  {% if type %}
+    <script>
+      Swal.fire('登入成功', 'You clicked the button!', 'success')
+    </script>
+  {% endif %}
+{% endblock %}
