@@ -93,6 +93,30 @@ def createuser():
     flash('新增成功')
     return redirect(url_for('users'))
 
+@app.route("/edit/<int:id>", methods=['GET','POST'])
+def edit(id):
+    if request.method == 'POST':
+        name = request.form.get('username')
+        account = request.form.get('account')
+        password = request.form.get('password')
+        with get_db() as cur:
+            cur.row_factory = sql.Row
+            cur = cur.cursor()
+            cur.execute(f"UPDATE Users SET name='{ name }', account='{ account }', password='{ password }' WHERE id = {id};")
+            data = cur.fetchone()
+            cur.close()
+        flash('修改成功')
+        return redirect(url_for('users'))
+    else:   
+        with get_db() as cur:
+            cur.row_factory = sql.Row
+            cur = cur.cursor()
+            cur.execute(f'select * from Users where id = {id}')
+            data = cur.fetchone()
+            cur.close()
+        return render_template("edit.html", data=data)
+    
+    # return render_template("users.html",data=data)
 
 @app.route("/deleteuser/<int:id>", methods=['POST'])
 def deleteuser(id):

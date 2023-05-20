@@ -1,5 +1,6 @@
 {% extends 'layout/back.html'%}
 {% block main %}
+<h1 class="mt-4">管理使用者</h1>
 <table class="table" style="width: 1000px;">
   <thead>
     <tr>
@@ -20,7 +21,7 @@
       <td>
             <div class='row'>
               <div class='col'>
-                <button type="button" class="btn btn-outline-success">修改</button>
+                <a type="button" class="btn btn-outline-success" href="/edit/{{ data[i].id }}">修改</a>
               </div>
               <div class='col'>
                 <form action='/deleteuser/{{ data[i].id }}' method='post'>
@@ -28,17 +29,13 @@
                 </form>
               </div>
             </div>
-        
-        
-        
-        
       </td>
     </tr>    
     {% endfor %}
   </tbody>
 </table>
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create">
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#create" style='right: 200px; position: absolute;'>
   新增
 </button>
 
@@ -61,8 +58,8 @@
         <input id="password" class="form-control" name="password" type='password' />
       </div>
       <div class="modal-footer" >
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="submit" class="btn btn-primary">新增</button>
       </div>
     </form>
     </div>
