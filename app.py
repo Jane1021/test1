@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3 as sql
 from flask import g
+import os
+import uuid
 
 DATABASE = 'database.db'
-
+UPLOAD_FOLDER = 'static/images/'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def get_db():
@@ -20,6 +24,13 @@ def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
+
+def allowed_file(filename):
+    x = ''
+    if '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
+        x = filename.rsplit('.', 1)[1].lower()
+    return x
 
 
 @app.route("/")
@@ -50,13 +61,22 @@ def page():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        type = '登入失敗'
         name = request.form.get('account')
         password = request.form.get('password')
-        if name == 'admin' and password == '1234':
-            type = '成功'
+        with get_db() as cur:
+            cur.row_factory = sql.Row
+            cur = cur.cursor()
+            cur.execute('select * from Users')
+            data = cur.fetchall()
+            cur.close()
+        for i in data:
+            if name == i['account'] and password == i['password']:
+                type = '成功'
+                break
+        if type == '成功':
             return render_template("page2.html", id=name, ps=password, type=type)
         else:
-            type = '登入失敗'
             return render_template("login.html", type=type)
     else:
         return render_template("login.html")
@@ -81,19 +101,22 @@ def users():
 @app.route("/createuser", methods=['POST'])
 def createuser():
     name = request.form.get('username')
-    if name == '': name = 'User'
+    if name == '':
+        name = 'User'
     account = request.form.get('account')
     password = request.form.get('password')
     with get_db() as cur:
         cur.row_factory = sql.Row
         cur = cur.cursor()
-        cur.execute(f"INSERT INTO Users (name, account, password) VALUES ('{name}', '{account}', '{password}');")
+        cur.execute(
+            f"INSERT INTO Users (name, account, password) VALUES ('{name}', '{account}', '{password}');")
         data = cur.fetchall()
         cur.close()
     flash('新增成功')
     return redirect(url_for('users'))
 
-@app.route("/edit/<int:id>", methods=['GET','POST'])
+
+@app.route("/edit/<int:id>", methods=['GET', 'POST'])
 def edit(id):
     if request.method == 'POST':
         name = request.form.get('username')
@@ -102,12 +125,13 @@ def edit(id):
         with get_db() as cur:
             cur.row_factory = sql.Row
             cur = cur.cursor()
-            cur.execute(f"UPDATE Users SET name='{ name }', account='{ account }', password='{ password }' WHERE id = {id};")
+            cur.execute(
+                f"UPDATE Users SET name='{ name }', account='{ account }', password='{ password }' WHERE id = {id};")
             data = cur.fetchone()
             cur.close()
         flash('修改成功')
         return redirect(url_for('users'))
-    else:   
+    else:
         with get_db() as cur:
             cur.row_factory = sql.Row
             cur = cur.cursor()
@@ -115,8 +139,9 @@ def edit(id):
             data = cur.fetchone()
             cur.close()
         return render_template("edit.html", data=data)
-    
+
     # return render_template("users.html",data=data)
+
 
 @app.route("/deleteuser/<int:id>", methods=['POST'])
 def deleteuser(id):
@@ -130,6 +155,21 @@ def deleteuser(id):
     flash('刪除成功')
     return redirect(url_for('users'))
     # return render_template("users.html",data=data)
+
+
+@app.route("/upload", methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        f = request.files['file']
+        f.filename = allowed_file(f.filename)
+        name = str(uuid.uuid4())+'.'+f.filename
+        if f.filename == '':
+            type = '副檔名不符'
+        else:
+            type = '新增成功'
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], name))
+        return render_template("upload.html", type=type)
+    return render_template("upload.html")
 
 
 if __name__ == "__main__":
