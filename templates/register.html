@@ -1,0 +1,104 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 註冊 {% endblock title %}
+{% block content %}
+
+<div class="container text-center" style="width: 60%;">
+    <!-- Section: Design Block -->
+    <section class="text-center text-lg-start">
+        <style>
+            .cascading-right {
+                margin-right: -50px;
+            }
+
+            @media (max-width: 991.98px) {
+                .cascading-right {
+                    margin-right: 0;
+                }
+            }
+        </style>
+
+        <!-- Jumbotron -->
+        <div class="container py-4">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card cascading-right" style="
+              background: hsla(0, 0%, 100%, 0.55);
+              backdrop-filter: blur(30px);
+              ">
+                        <div class="card-body p-5 shadow-5 text-center">
+                            <h2 class="fw-bold mb-5">註冊</h2>
+                            <form action="/register" method="post" onsubmit="return CheckRegister();">
+                                <!-- 2 column grid layout with text inputs for the first and last names -->
+
+                                <div class="row form-outline mb-4 justify-content-center">
+                                    <div class="col-3 mt-2" style="text-align: left;">
+                                        <label class="form-label" for="createname">用戶名稱</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input type="text" id="createname" class="form-control" name="createname" />
+                                    </div>
+
+                                </div>
+                                <!-- Email input -->
+                                <div class="row form-outline mb-4 justify-content-center">
+                                    <div class="col-3 mt-2" style="text-align: left;">
+                                        <label class="form-label" for="createaccount">帳號</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input id="createaccount" class="form-control" name="createaccount" />
+                                    </div>
+                                </div>
+
+                                <!-- Password input -->
+                                <div class="row form-outline mb-4 justify-content-center">
+                                    <div class="col-3 mt-2" style="text-align: left;">
+                                        <label class="form-label" for="createpassword">密碼</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input type="password" id="createpassword" class="form-control"
+                                            name="createpassword" />
+                                    </div>
+                                </div>
+
+                                <!-- Check Password -->
+                                <div class="row form-outline mb-4 justify-content-center">
+                                    <div class="col-3 mt-2" style="text-align: left;">
+                                        <label class="form-label" for="checkpassword">確認密碼</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input type="password" id="checkpassword" class="form-control"
+                                            name="checkpassword" />
+                                    </div>
+                                </div>
+
+                                <!-- Submit button -->
+                                <button type="submit" class="btn btn-primary btn-block mb-4 mt-4">
+                                    註冊
+                                </button>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg"
+                        class="w-100 rounded-4 shadow-4" alt="" />
+                </div>
+            </div>
+        </div>
+        <!-- Jumbotron -->
+    </section>
+    <!-- Section: Design Block -->
+</div>
+{% if type %}
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '{{type}}',
+        text: '{{type}}'
+    })
+</script>
+{% endif %}
+{% endblock content %}

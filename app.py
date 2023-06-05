@@ -57,6 +57,10 @@ def page():
     dict1 = {'abc': 1324, 'name': 'tom'}
     return render_template("page.html", testx=x, dict1=dict1)
 
+@app.route("/logout")
+def logout():
+    return render_template("index.html", type='已登出')
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -70,21 +74,66 @@ def login():
             cur.execute('select * from Users')
             data = cur.fetchall()
             cur.close()
+        if name == 'admin' and password == '1234':
+            type = '成功'
+            return render_template("users.html", id=name, ps=password, type=type)
         for i in data:
             if name == i['account'] and password == i['password']:
                 type = '成功'
                 break
         if type == '成功':
-            return render_template("page2.html", id=name, ps=password, type=type)
+            return render_template("home.html", id=name, ps=password, type=type)
         else:
             return render_template("login.html", type=type)
     else:
         return render_template("login.html")
 
+@app.route("/register", methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        type='註冊成功'
+        name = request.form.get('createname')
+        account = request.form.get('createaccount')
+        password = request.form.get('createpassword')
+        
+        with get_db() as conn:
+            
+            cursor = conn.cursor()
+            
+            # 檢查使用者名稱是否已存在
+            cursor.execute(f"SELECT * FROM Users WHERE name = '{name}'")
+            existing_name = cursor.fetchone()
+                        
+            # 檢查帳號是否已存在
+            cursor.execute(f"SELECT * FROM Users WHERE account = '{account}'")
+            existing_account = cursor.fetchone()
+                        
+            # 檢查密碼是否已存在
+            cursor.execute(f"SELECT * FROM Users WHERE password = '{password}'")
+            existing_password = cursor.fetchone()
+                        
+            
+            if existing_name:
+                return render_template("register.html", type="使用者名稱已存在")
+            elif existing_account:
+                return render_template("register.html", type="帳號已存在")
+            elif existing_password:
+                return render_template("register.html", type="密碼已存在")
+            # 若以上檢查都通過，執行 INSERT 語句進行註冊
+            else:
+                cursor.execute(f"INSERT INTO Users (name, account, password) VALUES ('{name}', '{account}', '{password}');")
+                conn.commit()
+                return render_template("login.html",type=type)
+    else:
+        return render_template("register.html")
 
 @app.route("/index")
 def index():
     return render_template("index.html")
+
+@app.route("/home")
+def home():
+    return render_template("home.html")
 
 
 @app.route("/users")

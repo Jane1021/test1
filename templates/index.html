@@ -2,34 +2,36 @@
 {% block title %} 首頁 {% endblock title %}
 {% block content %}
 
-<div class="container bg-secondary">
-  <div class="row mt-3">
-    <div class="col-3" style="width: 500px; height: 500px">
-      <div class="card" style="width: 18rem;">
-        <h1 style="text-align:center">題目標題</h1>
-        <div class="card-body">
-          <p class="card-text">題目說明</p>
-          <div style="text-align:center">
-            <a href="html/about.html" class="btn btn-danger">Go somewhere</a>
-          </div>
-
+<main class="flex-shrink-0">
+    <!-- Header-->
+    <header class="py-5">
+        <div class="container px-5 pb-5">
+            <div class="row gx-5 align-items-center">
+                <div class="col-xxl-5">
+                    <!-- Header text content-->
+                    <div class="text-center text-xxl-start">
+                        <h1 class="display-3 fw-bolder mb-5"><span class="text-gradient d-inline">現在就開始使用 互聯天地 ConnectWorld</span></h1>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
+                            <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="/login">登入</a>
+                            <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" href="/register">註冊</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-7">
+                    <!-- Header profile picture-->
+                    <div class="d-flex justify-content-center mt-5 mt-xxl-0">
+                        <img src="{{ url_for('static', filename='images/Logo.png') }}">
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </header>
+</main>
 
-    <div class="col-3" style="width: 500px; height: 500px">
-      <div class="card" style="width: 18rem;">
-        <h1 style="text-align:center">題目標題</h1>
-        <div class="card-body">
-          <p class="card-text">題目說明</p>
-          <div style="text-align:center">
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+{% if type %}
+<script>
+    Success('{{ type }}', '您已成功登出');
+</script>
+{% endif %}
 
 {% endblock content %}
